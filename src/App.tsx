@@ -208,9 +208,71 @@ const ShowBoard = ({ board, setBoard, xIsNext, setXIsNext } : { board: BoardType
 
   return (
     <>
-    <div className={sharedRowClassName}>
+    {/* <div className={sharedRowClassName}>
+      {board.map((nestedArray, indexAndRowNum) => nestedArray.map(
+        (element, indexAndColNum) => 
+          <>
+          <div className={sharedRowClassName}>
+          <ShowTile 
+            rowNum={indexAndRowNum} 
+            colNum={indexAndColNum} 
+            board={board} 
+            setBoard={setBoard} 
+            xIsNext={xIsNext} 
+            setXIsNext={setXIsNext} />
+          </>
+        )
+        )} */}
+      {/* {
+        board.map(
+          (rowArray) => {() +
+            rowArray.map((cellValue) => <div> cellValue</div>)}
+        
+      } */}
+      <br />
       {/* {board[0].map(ShowTile(move=index, rowNum=0,colNum=index, board=board, setBoard=setBoard))} */}
 
+
+      <div className={sharedRowClassName}>
+      {board[0].map(
+          (element, indexAndColNum) => 
+            <ShowTile 
+              rowNum={0} 
+              colNum={indexAndColNum} 
+              board={board} 
+              setBoard={setBoard} 
+              xIsNext={xIsNext} 
+              setXIsNext={setXIsNext} />
+      )}
+      </div>
+
+      <div className={sharedRowClassName}>
+      {board[0].map(
+          (element, indexAndColNum) => 
+            <ShowTile 
+              rowNum={1} 
+              colNum={indexAndColNum} 
+              board={board} 
+              setBoard={setBoard} 
+              xIsNext={xIsNext} 
+              setXIsNext={setXIsNext} />
+      )}
+      </div>
+
+      <div className={sharedRowClassName}>
+      {board[0].map(
+          (element, indexAndColNum) => 
+            <ShowTile 
+              rowNum={2} 
+              colNum={indexAndColNum} 
+              board={board} 
+              setBoard={setBoard} 
+              xIsNext={xIsNext} 
+              setXIsNext={setXIsNext} />
+      )}
+      </div>
+{/* 
+      <div className={sharedRowClassName}>
       <ShowTile rowNum={0} colNum={0} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
       <ShowTile rowNum={0} colNum={1} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
       <ShowTile rowNum={0} colNum={2} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
@@ -228,29 +290,17 @@ const ShowBoard = ({ board, setBoard, xIsNext, setXIsNext } : { board: BoardType
       <ShowTile rowNum={2} colNum={0} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
       <ShowTile rowNum={2} colNum={1} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
       <ShowTile rowNum={2} colNum={2} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-
-    </div>
-
-    {/* <div className={sharedRowClassName}>
-      {board[1].map(ShowTile)}
-    </div>
-
-    <div className={sharedRowClassName}>
-      {board[2].map(ShowTile)}
     </div> */}
     </>
   )
 
 }
 
-const RefreshButton = ({ setBoard } : { setBoard: Function }) => {
+const RefreshButton = ({ setBoard, setXIsNext } : { setBoard: Function, setXIsNext: Function }) => {
   
   const refreshBoard = () => {
-    // debugger;
-    console.log(startingBoard)
     setBoard(startingBoard);
-    console.log(startingBoard)
-    console.log("yesss")
+    setXIsNext(true)
   }
 
   return(
@@ -288,8 +338,6 @@ function App() {
 
   const [xIsNext, setXIsNext] = useState(true)
 
-
-
   const currentWinState = checkWinCondition(board)
 
   return (
@@ -299,7 +347,7 @@ function App() {
 
       <ShowBoard  board={board} setBoard= {setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext}/>
 
-      <RefreshButton setBoard = {setBoard} />
+      <RefreshButton setBoard = {setBoard} setXIsNext = {setXIsNext} />
 
       <ShowResults outcome={currentWinState.outcome} winner={currentWinState.winner} />
     </>
