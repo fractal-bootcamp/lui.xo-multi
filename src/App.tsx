@@ -46,9 +46,27 @@ const getCol = (b: typeof board, colIndex: number) => {
 
 }
 
+const getDiagonal = (b: typeof board, startingPoint: "nw" | "ne") => {
+  const diagonalArray = []
+
+  if (startingPoint === "nw"){
+    for (let rowColIndex = 0; rowColIndex < b.length; rowColIndex++) {
+      diagonalArray.push(b[rowColIndex][rowColIndex])
+    }
+  }
+
+  if (startingPoint === "ne") {
+    for (let rowColIndex = b.length - 1; rowColIndex >= 0; rowColIndex--) {
+      diagonalArray.push(b[rowColIndex][rowColIndex])
+    }
+
+  }
+  return diagonalArray
+}
 
 export const checkWinCondition = (b: typeof board) => {
 
+  // Check the Rows
   for (let rowIndex = 0; rowIndex < 3; rowIndex++ ) {
     const rowCheckOutcome = checkRow(b[rowIndex])
 
@@ -57,18 +75,29 @@ export const checkWinCondition = (b: typeof board) => {
   }
   }
 
+  // Check the Columns
   for (let colIndex = 0; colIndex < 3; colIndex++ ) {
     const colCheckOutcome = checkRow(getCol(b,colIndex))
+    // getCol turns a column into an array, so it can be handled just like a Row
 
   if (!!colCheckOutcome.outcome) {
     return colCheckOutcome
   }
   }
 
+  // Check the Diagonals
+  checkRow(getDiagonal(b, "nw"))
+  checkRow(getDiagonal(b, "ne"))
+
 
   return {outcome: null, winner: null}
   // win, tie, loss, or neither
   // if win, who won (X/O/null)
+
+}
+
+const ShowBoard = (b: typeof board) => {
+  return
 
 }
 
@@ -78,6 +107,7 @@ function App() {
       <p>
         Game will soon be here
       </p>
+      {board}
     </>
   )
 }
