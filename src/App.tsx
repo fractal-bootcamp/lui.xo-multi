@@ -137,7 +137,7 @@ const ShowTile = (move: string) => {
 
   const oClass = "text-purple-500"
 
-  const nullClass = "text-gray-100"
+  const nullClass = "text-gray-100 cursor-pointer"
 
 
   if (move ==="X") {
@@ -169,32 +169,55 @@ const ShowBoard = ({ board } : { board: BoardType} ) => {
   return (
     <>
     <div className={sharedRowClassName}>
-      {exampleBoard[0].map(ShowTile)}
+      {board[0].map(ShowTile)}
     </div>
 
     <div className={sharedRowClassName}>
-      {exampleBoard[1].map(ShowTile)}
+      {board[1].map(ShowTile)}
     </div>
 
     <div className={sharedRowClassName}>
-      {exampleBoard[2].map(ShowTile)}
+      {board[2].map(ShowTile)}
     </div>
-
-    <div> The board is being passed with {board[1][1]}</div>
     </>
   )
 
 }
 
+
+const ShowResults = ( {outcome, winner} : WinState ) => {
+  if (outcome === "WIN"){
+    return(
+      <div>
+        The winner is {winner}
+        <br />
+        Congratulations!
+      </div>
+    )
+  }
+  else if (outcome === "TIE"){
+    return(
+      <div>
+        The game is TIED! No winner today.
+      </div>
+    )
+  }
+  else return null
+}
+
 function App() {
-  const [board, setBoard] = useState(startingBoard)
+  const [board, setBoard] = useState(exampleBoard)
+
+  const currentWinState = checkWinCondition(board)
 
   return (
     <>
       <p>
-        Game will soon be here
+        Clicky click:
       </p>
       <ShowBoard  board={board}/>
+
+      <ShowResults outcome = {currentWinState.outcome} winner = {currentWinState.winner} />
     </>
   )
 }
