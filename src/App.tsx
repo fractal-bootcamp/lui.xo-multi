@@ -13,7 +13,7 @@ import './App.css'
 const board = [
   ['O','O','X'],
   ['X','X','O'],
-  ['X','O','O'],
+  ['X','O',''],
 ]
 
 type WinState = {
@@ -73,6 +73,9 @@ const getDiagonal = (b: typeof board, startingPoint: "nw" | "ne") => {
   else console.log("ERROR: irregular diagonal startPoint value passed")
 }
 
+// export const checkWinCondition = (b: typeof board) : WinState => {
+
+
 export const checkWinCondition = (b: typeof board) => {
   
   // Check the Rows
@@ -125,34 +128,46 @@ export const checkWinCondition = (b: typeof board) => {
 }
 
 const ShowTile = (move: string) => {
+
+  const sharedClassName = "flex flex-col text-green-500 bg-gray-100 w-10"
+
   if (move ==="X") {
     return(
-      <div>
+      <div className = {sharedClassName}>
         X
       </div>
     )
   }
   if (move ==="O") {
     return(
-      <div>
+      <div className = {sharedClassName}>
         O
       </div>
     )
   }
   else return (
-    <div>
+    <div className = {sharedClassName}>
       -
     </div>
   )
 }
 
-const ShowBoard = (b: typeof board) => {
+const ShowBoard = () => {
   console.log(board[0])
+  const sharedRowClassName = 'flex'
   return (
     <>
-    {board[0].map(ShowTile)}
-    {board[1].map(ShowTile)}
-    {board[2].map(ShowTile)}
+    <div className={sharedRowClassName}>
+      {board[0].map(ShowTile)}
+    </div>
+
+    <div className={sharedRowClassName}>
+      {board[1].map(ShowTile)}
+    </div>
+
+    <div className={sharedRowClassName}>
+      {board[2].map(ShowTile)}
+    </div>
     </>
   )
 
