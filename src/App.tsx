@@ -4,13 +4,13 @@ import './App.css'
 
 // const player = {}
 
-// const board = [
-//   ['','',''],
-//   ['','',''],
-//   ['','',''],
-// ]
+const startingBoard = [
+  ['','',''],
+  ['','',''],
+  ['','',''],
+]
 
-const board = [
+const exampleBoard = [
   ['O','O','X'],
   ['X','X','O'],
   ['X','O',''],
@@ -20,6 +20,8 @@ type WinState = {
   outcome: "WIN" | "TIE" | null;
   winner: "X" | "O" | null;
 }
+
+type BoardType = string[][]
 
 const checkRow = (row: string[]) => {
   const winner = row.reduce((prev: string | null, curr: string) => {
@@ -42,31 +44,31 @@ return {outcome: !!winner ? "WIN" : null,  winner: winner}
 }
 
 
-const getCol = (b: typeof board, colIndex: number) => {
+const getCol = (board: typeof exampleBoard, colIndex: number) => {
   const colArray = []
 
   for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
-    colArray.push(b[rowIndex][colIndex])
+    colArray.push(board[rowIndex][colIndex])
   }
   return colArray
 
 }
 
-const getDiagonal = (b: typeof board, startingPoint: "nw" | "ne") => {
+const getDiagonal = (board: typeof exampleBoard, startingPoint: "nw" | "ne") => {
   
   if (startingPoint === "nw"){
     const diagonalArray = []
-    for (let i = 0; i < b.length; i++) {
-      diagonalArray.push(b[i][i])
+    for (let i = 0; i < board.length; i++) {
+      diagonalArray.push(board[i][i])
     }
     return diagonalArray
   }
 
   else if (startingPoint === "ne") {
     const diagonalArray = []
-    for (let i = 0; i < b.length; i++) {
+    for (let i = 0; i < board.length; i++) {
       // desired coords here are [2][0] ... [1][1] ... [0][2]
-      diagonalArray.push(b[b.length -1 - i][i])
+      diagonalArray.push(board[board.length -1 - i][i])
     }
     return diagonalArray
   }
@@ -76,7 +78,7 @@ const getDiagonal = (b: typeof board, startingPoint: "nw" | "ne") => {
 // export const checkWinCondition = (b: typeof board) : WinState => {
 
 
-export const checkWinCondition = (b: typeof board) => {
+export const checkWinCondition = (b: typeof exampleBoard) => {
   
   // Check the Rows
   for (let rowIndex = 0; rowIndex < 3; rowIndex++ ) {
@@ -129,57 +131,70 @@ export const checkWinCondition = (b: typeof board) => {
 
 const ShowTile = (move: string) => {
 
-  const sharedClassName = "flex flex-col text-green-500 bg-gray-100 w-10"
+  const sharedClassName = "flex flex-col text-green-500 bg-gray-100 w-10 h-10 rounded-sm m-1 p-2"
+
+  const xClass = "text-green-500"
+
+  const oClass = "text-purple-500"
+
+  const nullClass = "text-gray-100"
+
 
   if (move ==="X") {
     return(
-      <div className = {sharedClassName}>
+      <div className = {sharedClassName + " " + xClass}>
         X
       </div>
     )
   }
   if (move ==="O") {
     return(
-      <div className = {sharedClassName}>
+      <div className = {sharedClassName + " " + oClass}>
         O
       </div>
     )
   }
   else return (
-    <div className = {sharedClassName}>
+    <a onClick={() => console.log("Yes")}>
+    <div className = {sharedClassName + " " + nullClass}>
       -
     </div>
+    </a>
   )
 }
 
-const ShowBoard = () => {
-  console.log(board[0])
+const ShowBoard = ({ board } : { board: BoardType} ) => {
+  console.log(exampleBoard[0])
   const sharedRowClassName = 'flex'
   return (
     <>
     <div className={sharedRowClassName}>
-      {board[0].map(ShowTile)}
+      {exampleBoard[0].map(ShowTile)}
     </div>
 
     <div className={sharedRowClassName}>
-      {board[1].map(ShowTile)}
+      {exampleBoard[1].map(ShowTile)}
     </div>
 
     <div className={sharedRowClassName}>
-      {board[2].map(ShowTile)}
+      {exampleBoard[2].map(ShowTile)}
     </div>
+
+    <div> The board is being passed with {board[1][1]}</div>
     </>
   )
 
 }
 
 function App() {
+  const [board, setBoard] = useState(startingBoard)
+
   return (
     <>
       <p>
         Game will soon be here
       </p>
-      <ShowBoard />
+      <ShowBoard  board={board}/>
     </>
   )
 }
