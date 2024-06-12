@@ -1,7 +1,7 @@
 const testBoard = [
-    ['O','','O'],
-    ['X','X','X'],
-    ['X','',''],
+    ['O','O','O'],
+    ['X','O','X'],
+    ['X','O',''],
   ]
 
 import { checkWinCondition } from "./src/App"
@@ -9,3 +9,6 @@ import { checkWinCondition } from "./src/App"
 const winState = checkWinCondition(testBoard)
 
 console.log(winState)
+
+
+

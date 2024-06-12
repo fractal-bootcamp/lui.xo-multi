@@ -35,6 +35,18 @@ return {outcome: !!winner ? "WIN" : null,  winner: winner}
 
 }
 
+
+const getCol = (b: typeof board, colIndex: number) => {
+  const colArray = []
+
+  for (let rowIndex = 0; rowIndex < 3; rowIndex++) {
+    colArray.push(b[rowIndex][colIndex])
+  }
+  return colArray
+
+}
+
+
 export const checkWinCondition = (b: typeof board) => {
 
   for (let rowIndex = 0; rowIndex < 3; rowIndex++ ) {
@@ -42,6 +54,14 @@ export const checkWinCondition = (b: typeof board) => {
 
   if (!!rowCheckOutcome.outcome) {
     return rowCheckOutcome
+  }
+  }
+
+  for (let colIndex = 0; colIndex < 3; colIndex++ ) {
+    const colCheckOutcome = checkRow(getCol(b,colIndex))
+
+  if (!!colCheckOutcome.outcome) {
+    return colCheckOutcome
   }
   }
 
