@@ -4,10 +4,16 @@ import './App.css'
 
 // const player = {}
 
+// const board = [
+//   ['','',''],
+//   ['','',''],
+//   ['','',''],
+// ]
+
 const board = [
-  ['','',''],
-  ['','',''],
-  ['','',''],
+  ['O','O','X'],
+  ['X','X','O'],
+  ['X','O','O'],
 ]
 
 type WinState = {
@@ -118,8 +124,37 @@ export const checkWinCondition = (b: typeof board) => {
 
 }
 
+const ShowTile = (move: string) => {
+  if (move ==="X") {
+    return(
+      <div>
+        X
+      </div>
+    )
+  }
+  if (move ==="O") {
+    return(
+      <div>
+        O
+      </div>
+    )
+  }
+  else return (
+    <div>
+      -
+    </div>
+  )
+}
+
 const ShowBoard = (b: typeof board) => {
-  return
+  console.log(board[0])
+  return (
+    <>
+    {board[0].map(ShowTile)}
+    {board[1].map(ShowTile)}
+    {board[2].map(ShowTile)}
+    </>
+  )
 
 }
 
@@ -129,7 +164,7 @@ function App() {
       <p>
         Game will soon be here
       </p>
-      {board}
+      <ShowBoard />
     </>
   )
 }
