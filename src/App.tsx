@@ -65,7 +65,7 @@ const getDiagonal = (b: typeof board, startingPoint: "nw" | "ne") => {
 }
 
 export const checkWinCondition = (b: typeof board) => {
-
+  
   // Check the Rows
   for (let rowIndex = 0; rowIndex < 3; rowIndex++ ) {
     const rowCheckOutcome = checkRow(b[rowIndex])
@@ -88,6 +88,18 @@ export const checkWinCondition = (b: typeof board) => {
   // Check the Diagonals
   checkRow(getDiagonal(b, "nw"))
   checkRow(getDiagonal(b, "ne"))
+
+
+  const moveCount = b.toString().replace(/,/g,'').length
+  // without the /g global modifier this replace function will default to
+  // only swapping out the first instance of the character
+
+  const boardSize = b.length * b.length
+  // square boards only
+
+  if (moveCount >= boardSize) {
+    return {outcome: "TIE", winner: null}
+  }
 
 
   return {outcome: null, winner: null}
