@@ -25,26 +25,14 @@ type BoardType = string[][]
 
 
 const getUpdatedBoard = (board: BoardType, rowNum: number, colNum: number, xIsNext: boolean) => {
-  let newBoard = [...board]
-  const space = board[rowNum][colNum]
-  console.log("space is", space.length)
+  const newBoard = structuredClone(board)
   let newChar = ""
   
-  if (space != ""){
+  if (board[rowNum][colNum] != ""){
     console.log("ERROR: getUpdatedBoard attempted on occupied tile.")
   }
-  else if (xIsNext) {
-    newChar = "X"
-    xIsNext = !xIsNext
-  }
-  else {
-    newChar = "O"
-    xIsNext = !xIsNext
-  }
  
-  newBoard[rowNum][colNum] = newChar
-  console.log("newChar is", newChar)
-  console.log("newBoard", newBoard)
+  newBoard[rowNum][colNum] = (xIsNext) ? "X" : "O"
   return newBoard
 }
 
@@ -103,24 +91,24 @@ const getDiagonal = (board: typeof exampleBoard, startingPoint: "nw" | "ne") => 
 // export const checkWinCondition = (b: typeof board) : WinState => {
 
 
-export const checkWinCondition = (b: typeof exampleBoard) => {
+export const checkWinCondition = (b: typeof exampleBoard) : WinState => {
   
   // Check the Rows
   for (let rowIndex = 0; rowIndex < 3; rowIndex++ ) {
-    const rowCheckOutcome = checkRow(b[rowIndex])
+    const rowWinCondition = checkRow(b[rowIndex])
 
-  if (!!rowCheckOutcome.outcome) {
-    return rowCheckOutcome
+  if (!!rowWinCondition.outcome) {
+    return rowWinCondition
   }
   }
 
   // Check the Columns
   for (let colIndex = 0; colIndex < 3; colIndex++ ) {
-    const colCheckOutcome = checkRow(getCol(b,colIndex))
+    const colWinCondition = checkRow(getCol(b,colIndex))
     // getCol turns a column into an array, so it can be handled just like a Row
 
-  if (!!colCheckOutcome.outcome) {
-    return colCheckOutcome
+  if (!!colWinCondition.outcome) {
+    return colWinCondition
   }
   }
 
@@ -135,7 +123,6 @@ export const checkWinCondition = (b: typeof exampleBoard) => {
     return diagCheck2
     }
     
-
   const moveCount = b.toString().replace(/,/g,'').length
   // without the /g global modifier this replace function will default to
   // only swapping out the first instance of the character
@@ -146,7 +133,6 @@ export const checkWinCondition = (b: typeof exampleBoard) => {
   if (moveCount >= boardSize) {
     return {outcome: "TIE", winner: null}
   }
-
 
   return {outcome: null, winner: null}
   // win, tie, loss, or neither
@@ -161,30 +147,19 @@ const oClass = "text-purple-500"
 
 const NextPlayerMessage = ({ xIsNext } : { xIsNext: boolean }) => {
 
-  if(xIsNext){
-    return(
+  const nextChar = (xIsNext) ? "x" : "o"
+  let className = (xIsNext) ? xClass : oClass
+  className = className + " text-2xl font-bold"
+  return(
+    <div>
       <div>
-        <div>
-          Next move is:
-        </div>
-        <div className = {xClass}>
-          X
-        </div>
+        Next move is:
       </div>
-  )}
-
-  else {
-    return(
-      <div>
-        <div>
-          You're up:
-        </div>
-        <div className = {oClass}>
-          O
-        </div>
+      <div className = {className}>
+        {nextChar.toUpperCase()}
       </div>
-  )}
-  
+    </div>
+)
 }
 
 const ShowTile = ({rowNum, colNum, board, setBoard, xIsNext, setXIsNext }: {rowNum: number, colNum: number, board: BoardType, setBoard: Function, xIsNext: boolean, setXIsNext: Function}) => {
