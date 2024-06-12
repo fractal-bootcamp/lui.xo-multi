@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
 
-const player = {}
+// const player = {}
+
 const board = [
   ['','',''],
   ['','',''],
@@ -16,9 +16,9 @@ type WinState = {
 }
 
 const checkRow = (row: string[]) => {
-  const winner = row.reduce((prev, curr) => {
+  const winner = row.reduce((prev: string | null, curr: string) => {
     if (prev === "") {
-      return null
+      return ""
     }
     if (prev === curr) {
       return curr
@@ -38,11 +38,12 @@ return {outcome: !!winner ? "WIN" : null,  winner: winner}
 export const checkWinCondition = (b: typeof board) => {
 
   for (let rowIndex = 0; rowIndex < 3; rowIndex++ ) {
-    const winner = checkRow(b[rowIndex])
+    const rowCheckOutcome = checkRow(b[rowIndex])
+
+  if (!!rowCheckOutcome.outcome) {
+    return rowCheckOutcome
   }
-  checkRow(b[0])
-  checkRow(b[1])
-  checkRow(b[2])
+  }
 
 
   return {outcome: null, winner: null}
