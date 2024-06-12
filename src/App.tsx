@@ -18,12 +18,12 @@ type WinState = {
 const checkRow = (row: string[]) => {
   const winner = row.reduce((prev: string | null, curr: string) => {
     if (prev === "") {
-      return ""
+      return null
     }
     if (prev === curr) {
       return curr
     }
-    return curr
+    return null
   }
 )
 // array.reduce(previous, current) will cycle through
@@ -53,11 +53,9 @@ export const checkWinCondition = (b: typeof board) => {
 }
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <p className="read-the-docs">
+      <p>
         Game will soon be here
       </p>
     </>
