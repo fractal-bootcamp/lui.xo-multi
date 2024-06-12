@@ -48,25 +48,20 @@ const getCol = (b: typeof board, colIndex: number) => {
 
 const getDiagonal = (b: typeof board, startingPoint: "nw" | "ne") => {
   
-
   if (startingPoint === "nw"){
     const diagonalArray = []
     for (let i = 0; i < b.length; i++) {
       diagonalArray.push(b[i][i])
     }
-    console.log("NW CHECK DETECTED")
-    console.log(diagonalArray)
     return diagonalArray
   }
 
   else if (startingPoint === "ne") {
     const diagonalArray = []
     for (let i = 0; i < b.length; i++) {
-      // desired coords are [2][0] ... [1][1] ... [0][2]
+      // desired coords here are [2][0] ... [1][1] ... [0][2]
       diagonalArray.push(b[b.length -1 - i][i])
     }
-    console.log("NE CHECK DETECTED")
-    console.log(diagonalArray)
     return diagonalArray
   }
   else console.log("ERROR: irregular diagonal startPoint value passed")
@@ -95,14 +90,11 @@ export const checkWinCondition = (b: typeof board) => {
 
   // Check the Diagonals
   const diagCheck1 = checkRow(getDiagonal(b, "nw"))
-  console.log('diagCheck1 has', diagCheck1)
   if (!!diagCheck1.outcome) {
     return diagCheck1
     }
 
-
   const diagCheck2 = checkRow(getDiagonal(b, "ne"))
-  console.log('diagne is ', getDiagonal(b, "ne"))
   if (!!diagCheck2.outcome) {
     return diagCheck2
     }
