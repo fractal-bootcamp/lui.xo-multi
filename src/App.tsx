@@ -12,8 +12,8 @@ const startingBoard = [
 
 const exampleBoard = [
   ['O','O','X'],
-  ['X','X','O'],
-  ['X','O',''],
+  ['','X','X'],
+  ['O','O',''],
 ]
 
 type WinState = {
@@ -22,6 +22,32 @@ type WinState = {
 }
 
 type BoardType = string[][]
+
+let xIsNext = true
+
+const getUpdatedBoard = (board: BoardType, rowNum: number, colNum: number) => {
+  let newBoard = [...board]
+  const space = board[rowNum][colNum]
+  console.log("space is", space.length)
+  let newChar = ""
+  
+  if (space != ""){
+    console.log("ERROR: getUpdatedBoard attempted on occupied tile.")
+  }
+  else if (xIsNext) {
+    newChar = "X"
+    xIsNext = !xIsNext
+  }
+  else {
+    newChar = "O"
+    xIsNext = !xIsNext
+  }
+ 
+  newBoard[rowNum][colNum] = newChar
+  console.log("newChar is", newChar)
+  console.log("newBoard", newBoard)
+  return newBoard
+}
 
 const checkRow = (row: string[]) => {
   const winner = row.reduce((prev: string | null, curr: string) => {
@@ -129,25 +155,27 @@ export const checkWinCondition = (b: typeof exampleBoard) => {
 
 }
 
-const ShowTile = (move: string) => {
+const ShowTile = ({rowNum, colNum, board,setBoard}: {rowNum: number, colNum: number, board: BoardType, setBoard: Function}) => {
 
   const sharedClassName = "flex flex-col text-green-500 bg-gray-100 w-10 h-10 rounded-sm m-1 p-2"
-
   const xClass = "text-green-500"
-
   const oClass = "text-purple-500"
+  const nullClass = "text-gray-200 cursor-pointer"
 
-  const nullClass = "text-gray-100 cursor-pointer"
+  const makeMove = () => {
+    const testThing = setBoard(getUpdatedBoard(board, rowNum, colNum))
+    console.log("testThing", testThing)
+  }
 
 
-  if (move ==="X") {
+  if (board[rowNum][colNum] ==="X") {
     return(
       <div className = {sharedClassName + " " + xClass}>
         X
       </div>
     )
   }
-  if (move ==="O") {
+  if (board[rowNum][colNum] ==="O") {
     return(
       <div className = {sharedClassName + " " + oClass}>
         O
@@ -155,7 +183,7 @@ const ShowTile = (move: string) => {
     )
   }
   else return (
-    <a onClick={() => console.log("Yes")}>
+    <a onClick={() => makeMove()}>
     <div className = {sharedClassName + " " + nullClass}>
       -
     </div>
@@ -163,29 +191,73 @@ const ShowTile = (move: string) => {
   )
 }
 
-const ShowBoard = ({ board } : { board: BoardType} ) => {
-  console.log(exampleBoard[0])
+const ShowBoard = ({ board, setBoard } : { board: BoardType, setBoard: Function} ) => {
+
   const sharedRowClassName = 'flex'
+
+  const testClick = () => {
+    console.log("testClick")
+    const testThing = setBoard(getUpdatedBoard(board, 2, 2))
+    console.log("testThing", testThing)
+  }
+
   return (
     <>
     <div className={sharedRowClassName}>
-      {board[0].map(ShowTile)}
+      {/* {board[0].map(ShowTile(move=index, rowNum=0,colNum=index, board=board, setBoard=setBoard))} */}
+
+      <ShowTile rowNum={0} colNum={0} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={0} colNum={1} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={0} colNum={2} board={board} setBoard={setBoard} />
+
     </div>
 
     <div className={sharedRowClassName}>
+      <ShowTile rowNum={1} colNum={0} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={1} colNum={1} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={1} colNum={2} board={board} setBoard={setBoard} />
+
+    </div>
+
+    <div className={sharedRowClassName}>
+      <ShowTile rowNum={2} colNum={0} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={2} colNum={1} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={2} colNum={2} board={board} setBoard={setBoard} />
+
+    </div>
+
+    {/* <div className={sharedRowClassName}>
       {board[1].map(ShowTile)}
     </div>
 
     <div className={sharedRowClassName}>
       {board[2].map(ShowTile)}
-    </div>
+    </div> */}
     </>
   )
 
 }
 
+const RefreshButton = ({ setBoard } : { setBoard: Function }) => {
+  
+  const refreshBoard = () => {
+    // debugger;
+    console.log(startingBoard)
+    setBoard(startingBoard);
+    console.log(startingBoard)
+    console.log("yesss")
+  }
 
-const ShowResults = ( {outcome, winner} : WinState ) => {
+  return(
+    <>
+      <br />
+      <button onClick={() => refreshBoard()}>Start again</button>
+      <br />
+    </>
+  )
+}
+
+const ShowResults = ( {outcome, winner} : {outcome: string | null, winner: string | null }  ) => {
   if (outcome === "WIN"){
     return(
       <div>
@@ -206,7 +278,10 @@ const ShowResults = ( {outcome, winner} : WinState ) => {
 }
 
 function App() {
-  const [board, setBoard] = useState(exampleBoard)
+  console.log("==== APP REFRESH ====")
+  const [board, setBoard] = useState(structuredClone(startingBoard))
+
+  const [xIsNext, setXIsNext] = useState(true)
 
   const currentWinState = checkWinCondition(board)
 
@@ -215,9 +290,12 @@ function App() {
       <p>
         Clicky click:
       </p>
-      <ShowBoard  board={board}/>
 
-      <ShowResults outcome = {currentWinState.outcome} winner = {currentWinState.winner} />
+      <ShowBoard  board={board} setBoard= {setBoard}/>
+
+      <RefreshButton setBoard = {setBoard} />
+
+      <ShowResults outcome={currentWinState.outcome} winner={currentWinState.winner} />
     </>
   )
 }
