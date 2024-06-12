@@ -23,9 +23,8 @@ type WinState = {
 
 type BoardType = string[][]
 
-let xIsNext = true
 
-const getUpdatedBoard = (board: BoardType, rowNum: number, colNum: number) => {
+const getUpdatedBoard = (board: BoardType, rowNum: number, colNum: number, xIsNext: boolean) => {
   let newBoard = [...board]
   const space = board[rowNum][colNum]
   console.log("space is", space.length)
@@ -155,16 +154,47 @@ export const checkWinCondition = (b: typeof exampleBoard) => {
 
 }
 
-const ShowTile = ({rowNum, colNum, board,setBoard}: {rowNum: number, colNum: number, board: BoardType, setBoard: Function}) => {
+//// STYLING USED IN NextPlayerMessage AND ShowTile //// 
+
+const xClass = "text-green-500"
+const oClass = "text-purple-500"
+
+const NextPlayerMessage = ({ xIsNext } : { xIsNext: boolean }) => {
+
+  if(xIsNext){
+    return(
+      <div>
+        <div>
+          Next move is:
+        </div>
+        <div className = {xClass}>
+          X
+        </div>
+      </div>
+  )}
+
+  else {
+    return(
+      <div>
+        <div>
+          You're up:
+        </div>
+        <div className = {oClass}>
+          O
+        </div>
+      </div>
+  )}
+  
+}
+
+const ShowTile = ({rowNum, colNum, board, setBoard, xIsNext, setXIsNext }: {rowNum: number, colNum: number, board: BoardType, setBoard: Function, xIsNext: boolean, setXIsNext: Function}) => {
 
   const sharedClassName = "flex flex-col text-green-500 bg-gray-100 w-10 h-10 rounded-sm m-1 p-2"
-  const xClass = "text-green-500"
-  const oClass = "text-purple-500"
   const nullClass = "text-gray-200 cursor-pointer"
 
   const makeMove = () => {
-    const testThing = setBoard(getUpdatedBoard(board, rowNum, colNum))
-    console.log("testThing", testThing)
+    setBoard(getUpdatedBoard(board, rowNum, colNum, xIsNext))
+    setXIsNext(!xIsNext)
   }
 
 
@@ -185,13 +215,13 @@ const ShowTile = ({rowNum, colNum, board,setBoard}: {rowNum: number, colNum: num
   else return (
     <a onClick={() => makeMove()}>
     <div className = {sharedClassName + " " + nullClass}>
-      -
+      
     </div>
     </a>
   )
 }
 
-const ShowBoard = ({ board, setBoard } : { board: BoardType, setBoard: Function} ) => {
+const ShowBoard = ({ board, setBoard, xIsNext, setXIsNext } : { board: BoardType, setBoard: Function, xIsNext: boolean, setXIsNext: Function} ) => {
 
   const sharedRowClassName = 'flex'
 
@@ -206,23 +236,23 @@ const ShowBoard = ({ board, setBoard } : { board: BoardType, setBoard: Function}
     <div className={sharedRowClassName}>
       {/* {board[0].map(ShowTile(move=index, rowNum=0,colNum=index, board=board, setBoard=setBoard))} */}
 
-      <ShowTile rowNum={0} colNum={0} board={board} setBoard={setBoard} />
-      <ShowTile rowNum={0} colNum={1} board={board} setBoard={setBoard} />
-      <ShowTile rowNum={0} colNum={2} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={0} colNum={0} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
+      <ShowTile rowNum={0} colNum={1} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
+      <ShowTile rowNum={0} colNum={2} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
 
     </div>
 
     <div className={sharedRowClassName}>
-      <ShowTile rowNum={1} colNum={0} board={board} setBoard={setBoard} />
-      <ShowTile rowNum={1} colNum={1} board={board} setBoard={setBoard} />
-      <ShowTile rowNum={1} colNum={2} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={1} colNum={0} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
+      <ShowTile rowNum={1} colNum={1} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
+      <ShowTile rowNum={1} colNum={2} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
 
     </div>
 
     <div className={sharedRowClassName}>
-      <ShowTile rowNum={2} colNum={0} board={board} setBoard={setBoard} />
-      <ShowTile rowNum={2} colNum={1} board={board} setBoard={setBoard} />
-      <ShowTile rowNum={2} colNum={2} board={board} setBoard={setBoard} />
+      <ShowTile rowNum={2} colNum={0} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
+      <ShowTile rowNum={2} colNum={1} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
+      <ShowTile rowNum={2} colNum={2} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
 
     </div>
 
@@ -283,15 +313,16 @@ function App() {
 
   const [xIsNext, setXIsNext] = useState(true)
 
+
+
   const currentWinState = checkWinCondition(board)
 
   return (
     <>
-      <p>
-        Clicky click:
-      </p>
+      <NextPlayerMessage xIsNext={xIsNext} />
+      <br />
 
-      <ShowBoard  board={board} setBoard= {setBoard}/>
+      <ShowBoard  board={board} setBoard= {setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext}/>
 
       <RefreshButton setBoard = {setBoard} />
 
