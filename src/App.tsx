@@ -12,7 +12,7 @@ const startingBoard = [
 
 const exampleBoard = [
   ['O','O','X'],
-  ['X','X','O'],
+  ['','X','O'],
   ['X','O',''],
 ]
 
@@ -22,6 +22,32 @@ type WinState = {
 }
 
 type BoardType = string[][]
+
+let xIsNext = true
+
+const getUpdatedBoard = (board: BoardType, rowNum: number, colNum: number) => {
+  let newBoard = [...board]
+  const space = board[rowNum][colNum]
+  console.log("space is", space.length)
+  let newChar = ""
+  
+  if (space != ""){
+    console.log("ERROR: getUpdatedBoard attempted on occupied tile.")
+  }
+  else if (xIsNext) {
+    newChar = "X"
+    xIsNext = !xIsNext
+  }
+  else {
+    newChar = "O"
+    xIsNext = !xIsNext
+  }
+ 
+  newBoard[rowNum][colNum] = newChar
+  console.log("newChar is", newChar)
+  console.log("newBoard", newBoard)
+  return newBoard
+}
 
 const checkRow = (row: string[]) => {
   const winner = row.reduce((prev: string | null, curr: string) => {
@@ -163,9 +189,16 @@ const ShowTile = (move: string) => {
   )
 }
 
-const ShowBoard = ({ board } : { board: BoardType} ) => {
-  console.log(exampleBoard[0])
+const ShowBoard = ({ board, setBoard } : { board: BoardType, setBoard: Function} ) => {
+
   const sharedRowClassName = 'flex'
+
+  const testClick = () => {
+    console.log("testClick")
+    const testThing = setBoard(getUpdatedBoard(board, 2, 2))
+    console.log("testThing", testThing)
+  }
+
   return (
     <>
     <div className={sharedRowClassName}>
@@ -179,6 +212,8 @@ const ShowBoard = ({ board } : { board: BoardType} ) => {
     <div className={sharedRowClassName}>
       {board[2].map(ShowTile)}
     </div>
+
+    <button onClick={() => testClick()}>Heyyyy</button>
     </>
   )
 
@@ -206,6 +241,7 @@ const ShowResults = ( {outcome, winner} : WinState ) => {
 }
 
 function App() {
+  console.log("==== APP REFRESH ====")
   const [board, setBoard] = useState(exampleBoard)
 
   const currentWinState = checkWinCondition(board)
@@ -215,7 +251,7 @@ function App() {
       <p>
         Clicky click:
       </p>
-      <ShowBoard  board={board}/>
+      <ShowBoard  board={board} setBoard= {setBoard}/>
 
       <ShowResults outcome = {currentWinState.outcome} winner = {currentWinState.winner} />
     </>
