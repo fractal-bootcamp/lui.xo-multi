@@ -99,94 +99,23 @@ const ShowBoard = ({ game, makeAMove } : { game: Game, makeAMove: Function} ) =>
 
   const sharedRowClassName = 'flex'
 
-  // const testClick = () => {
-  //   console.log("testClick")
-  //   const testThing = setBoard(getUpdatedBoard(board, 2, 2))
-  //   console.log("testThing", testThing)
-  // }
-
   return (
     <>
-    {/* <div className={sharedRowClassName}>
-      {board.map((nestedArray, indexAndRowNum) => nestedArray.map(
-        (element, indexAndColNum) => 
-          <>
+      {game.board.map((rowArray, rowNum) => {
+        return (
           <div className={sharedRowClassName}>
-          <ShowTile 
-            rowNum={indexAndRowNum} 
-            colNum={indexAndColNum} 
-            board={board} 
-            setBoard={setBoard} 
-            xIsNext={xIsNext} 
-            setXIsNext={setXIsNext} />
-          </>
+            {rowArray.map(
+                (_tile, colNum) => 
+                  <ShowTile 
+                    rowNum={rowNum} 
+                    colNum={colNum} 
+                    game={game} 
+                    makeAMove = {makeAMove}
+                    />
+            )}
+          </div>
         )
-        )} */}
-      {/* {
-        board.map(
-          (rowArray) => {() +
-            rowArray.map((cellValue) => <div> cellValue</div>)}
-        
-      } */}
-      <br />
-      {/* {board[0].map(ShowTile(move=index, rowNum=0,colNum=index, board=board, setBoard=setBoard))} */}
-
-
-      <div className={sharedRowClassName}>
-      {game.board[0].map(
-          (element, indexAndColNum) => 
-            <ShowTile 
-              rowNum={0} 
-              colNum={indexAndColNum} 
-              game={game} 
-              makeAMove = {makeAMove}
-              />
-      )}
-      </div>
-
-      <div className={sharedRowClassName}>
-      {game.board[0].map(
-          (element, indexAndColNum) => 
-            <ShowTile 
-              rowNum={1} 
-              colNum={indexAndColNum} 
-              game={game}  
-              makeAMove = {makeAMove} 
-              />
-      )}
-      </div>
-
-      <div className={sharedRowClassName}>
-      {game.board[0].map(
-          (element, indexAndColNum) => 
-            <ShowTile 
-              rowNum={2} 
-              colNum={indexAndColNum} 
-              game={game}  
-              makeAMove = {makeAMove} 
-              />
-      )}
-      </div>
-{/* 
-      <div className={sharedRowClassName}>
-      <ShowTile rowNum={0} colNum={0} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-      <ShowTile rowNum={0} colNum={1} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-      <ShowTile rowNum={0} colNum={2} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-
-    </div>
-
-    <div className={sharedRowClassName}>
-      <ShowTile rowNum={1} colNum={0} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-      <ShowTile rowNum={1} colNum={1} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-      <ShowTile rowNum={1} colNum={2} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-
-    </div>
-
-    <div className={sharedRowClassName}>
-      <ShowTile rowNum={2} colNum={0} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-      <ShowTile rowNum={2} colNum={1} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-      <ShowTile rowNum={2} colNum={2} board={board} setBoard={setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext} />
-    </div> */}
+      })}
     </>
   )
 
