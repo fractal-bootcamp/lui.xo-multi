@@ -1,6 +1,9 @@
 import express from "express"
 import cors from "cors";
 
+import { checkWinCondition } from './src/components/WinConditions';
+
+
 
 const app = express();
 
@@ -12,8 +15,8 @@ app.use(cors());
 
 const emptyBoard = [
     ['','',''],
-    ['','X',''],
-    ['O','',''],
+    ['','',''],
+    ['','',''],
 ]
 
 
@@ -89,7 +92,12 @@ app.post("/game/:id/move", (req, res) => {
 
     // Implement impact of user making their move onto the game state and send it back
     // NOT CURRENTLY CHECKED = WIN CONDITIONS
+
+    
     game.board = getUpdatedBoard(game.board, rowNum, colNum, game.xIsNext )
+
+    game.winState = checkWinCondition(game.board)
+    
     game.xIsNext = !game.xIsNext
 
     console.log("new value for game.board is", game.board)
