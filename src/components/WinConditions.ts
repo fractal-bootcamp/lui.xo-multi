@@ -1,12 +1,11 @@
-
+type GameToken = "X" | "O" | null;
 
 export type WinState = {
     outcome: "WIN" | "TIE" | null;
-    winner: "X" | "O" | null;
+    winner: GameToken
   }
   
   // type BoardType = string[][]
-  
   
   // const getUpdatedBoard = (board: BoardType, rowNum: number, colNum: number, xIsNext: boolean) => {
   //   const newBoard = structuredClone(board)
@@ -19,16 +18,18 @@ export type WinState = {
   //   newBoard[rowNum][colNum] = (xIsNext) ? "X" : "O"
   //   return newBoard
   // }
-  
-  const checkRow = (row: string[]) => {
-    const winner = row.reduce((prev: string | null, curr: string) => {
+
+  // You can't access members of type
+  // 
+  const checkRow = (row: GameToken[]) : WinState => {
+    const winner = row.reduce((prev: GameToken, curr: GameToken) => {
       if (prev === "") {
-        return null
+        return ""
       }
       if (prev === curr) {
         return curr
       }
-      return null
+      return ""
     }
   )
   // array.reduce(previous, current) will cycle through
@@ -51,7 +52,7 @@ export type WinState = {
   
   }
   
-  const getDiagonal = (board: typeof exampleBoard, startingPoint: "nw" | "ne") => {
+  const getDiagonal = (board: string[][], startingPoint: "nw" | "ne"): string[] => {
     
     if (startingPoint === "nw"){
       const diagonalArray = []
@@ -69,7 +70,10 @@ export type WinState = {
       }
       return diagonalArray
     }
-    else console.log("ERROR: irregular diagonal startPoint value passed")
+    else {
+        console.log("ERROR: irregular diagonal startPoint value passed")
+        return [""]
+    }
   }
   
   // export const checkWinCondition = (b: typeof board) : WinState => {
