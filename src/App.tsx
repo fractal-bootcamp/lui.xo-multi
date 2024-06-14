@@ -1,8 +1,36 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import './App.css'
 
 // const player = {}
+
+const PORT = 4000
+
+const serverPath = `http://localhost:${PORT}`
+
+const getGame = async (id: string) =>{
+  const response = await fetch(`${serverPath}/game/${id}`);
+  const json = await response.json();
+  console.log("getGame json", json)
+  return json
+}
+
+const makeAMove = async (id: string, rowNum: number, colNum: number) => {
+  const response = await fetch(`${serverPath}/game/${id}/move`, {
+    method: "POST",
+    body: JSON.stringify({ rowNum, colNum }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const json = await response.json();
+  console.log("makeAMove json:", json)
+  return json
+}
+
+// FOR NOW WE JUST USE A HARDCODED GAME ID
+
+const gameId = "ieoajcthisisgameideioacne"
 
 const startingBoard = [
   ['','',''],
@@ -21,20 +49,20 @@ type WinState = {
   winner: "X" | "O" | null;
 }
 
-type BoardType = string[][]
+// type BoardType = string[][]
 
 
-const getUpdatedBoard = (board: BoardType, rowNum: number, colNum: number, xIsNext: boolean) => {
-  const newBoard = structuredClone(board)
-  let newChar = ""
+// const getUpdatedBoard = (board: BoardType, rowNum: number, colNum: number, xIsNext: boolean) => {
+//   const newBoard = structuredClone(board)
+//   let newChar = ""
   
-  if (board[rowNum][colNum] != ""){
-    console.log("ERROR: getUpdatedBoard attempted on occupied tile.")
-  }
+//   if (board[rowNum][colNum] != ""){
+//     console.log("ERROR: getUpdatedBoard attempted on occupied tile.")
+//   }
  
-  newBoard[rowNum][colNum] = (xIsNext) ? "X" : "O"
-  return newBoard
-}
+//   newBoard[rowNum][colNum] = (xIsNext) ? "X" : "O"
+//   return newBoard
+// }
 
 const checkRow = (row: string[]) => {
   const winner = row.reduce((prev: string | null, curr: string) => {
@@ -162,25 +190,19 @@ const NextPlayerMessage = ({ xIsNext } : { xIsNext: boolean }) => {
 )
 }
 
-const ShowTile = ({rowNum, colNum, board, setBoard, xIsNext, setXIsNext }: {rowNum: number, colNum: number, board: BoardType, setBoard: Function, xIsNext: boolean, setXIsNext: Function}) => {
+const ShowTile = ({rowNum, colNum, game, makeAMove }: {rowNum: number, colNum: number, game: Game, makeAMove: Function}) => {
 
   const sharedClassName = "flex flex-col text-green-500 bg-gray-100 w-10 h-10 rounded-sm m-1 p-2"
   const nullClass = "text-gray-200 cursor-pointer"
 
-  const makeMove = () => {
-    setBoard(getUpdatedBoard(board, rowNum, colNum, xIsNext))
-    setXIsNext(!xIsNext)
-  }
-
-
-  if (board[rowNum][colNum] ==="X") {
+  if (game.board[rowNum][colNum] ==="X") {
     return(
       <div className = {sharedClassName + " " + xClass}>
         X
       </div>
     )
   }
-  if (board[rowNum][colNum] ==="O") {
+  if (game.board[rowNum][colNum] ==="O") {
     return(
       <div className = {sharedClassName + " " + oClass}>
         O
@@ -188,7 +210,7 @@ const ShowTile = ({rowNum, colNum, board, setBoard, xIsNext, setXIsNext }: {rowN
     )
   }
   else return (
-    <a onClick={() => makeMove()}>
+    <a onClick={() => makeAMove(game.id, rowNum, colNum)}>
     <div className = {sharedClassName + " " + nullClass}>
       
     </div>
@@ -196,15 +218,15 @@ const ShowTile = ({rowNum, colNum, board, setBoard, xIsNext, setXIsNext }: {rowN
   )
 }
 
-const ShowBoard = ({ board, setBoard, xIsNext, setXIsNext } : { board: BoardType, setBoard: Function, xIsNext: boolean, setXIsNext: Function} ) => {
+const ShowBoard = ({ game, makeAMove } : { game: Game, makeAMove: Function} ) => {
 
   const sharedRowClassName = 'flex'
 
-  const testClick = () => {
-    console.log("testClick")
-    const testThing = setBoard(getUpdatedBoard(board, 2, 2))
-    console.log("testThing", testThing)
-  }
+  // const testClick = () => {
+  //   console.log("testClick")
+  //   const testThing = setBoard(getUpdatedBoard(board, 2, 2))
+  //   console.log("testThing", testThing)
+  // }
 
   return (
     <>
@@ -234,41 +256,38 @@ const ShowBoard = ({ board, setBoard, xIsNext, setXIsNext } : { board: BoardType
 
 
       <div className={sharedRowClassName}>
-      {board[0].map(
+      {game.board[0].map(
           (element, indexAndColNum) => 
             <ShowTile 
               rowNum={0} 
               colNum={indexAndColNum} 
-              board={board} 
-              setBoard={setBoard} 
-              xIsNext={xIsNext} 
-              setXIsNext={setXIsNext} />
+              game={game} 
+              makeAMove = {makeAMove}
+              />
       )}
       </div>
 
       <div className={sharedRowClassName}>
-      {board[0].map(
+      {game.board[0].map(
           (element, indexAndColNum) => 
             <ShowTile 
               rowNum={1} 
               colNum={indexAndColNum} 
-              board={board} 
-              setBoard={setBoard} 
-              xIsNext={xIsNext} 
-              setXIsNext={setXIsNext} />
+              game={game}  
+              makeAMove = {makeAMove} 
+              />
       )}
       </div>
 
       <div className={sharedRowClassName}>
-      {board[0].map(
+      {game.board[0].map(
           (element, indexAndColNum) => 
             <ShowTile 
               rowNum={2} 
               colNum={indexAndColNum} 
-              board={board} 
-              setBoard={setBoard} 
-              xIsNext={xIsNext} 
-              setXIsNext={setXIsNext} />
+              game={game}  
+              makeAMove = {makeAMove} 
+              />
       )}
       </div>
 {/* 
@@ -332,24 +351,68 @@ const ShowResults = ( {outcome, winner} : {outcome: string | null, winner: strin
   else return null
 }
 
+export type Game = {
+  id: string,
+  board: string[][],
+  xIsNext: boolean,
+  winState: {outcome: "WIN" | "TIE" | null, winner: "X" | "O" | null },
+  player1: { token: string, id: string },
+  player2: { token: string, id: string },
+}
+
 function App() {
   console.log("==== APP REFRESH ====")
-  const [board, setBoard] = useState(structuredClone(startingBoard))
 
-  const [xIsNext, setXIsNext] = useState(true)
+  const emptyGame = {
+    id: "nogameid",
+    board: exampleBoard,
+    xIsNext: true,
+    winState: {outcome: null, winner: null}, // type WinState = { outcome: "WIN" | "TIE" | null; winner: "X" | "O" | null; }
+    player1: { token: "X", id:"" },
+    player2: { token: "O", id:"" },
+  }
 
-  const currentWinState = checkWinCondition(board)
+  const [game, setGame] = useState<Game>(emptyGame);
+  const [poller, setPoller] = useState(0);
+
+  // const [board, setBoard] = useState(structuredClone(startingBoard))
+  // const [xIsNext, setXIsNext] = useState(true)
+  // const currentWinState = checkWinCondition(board)
+
+  useEffect(() => {
+    const initializeGame = async () => {
+      //Go get a game
+      const data = await getGame(gameId);
+
+      // store the game in state
+      setGame(data.game)
+      console.log("GAME HAS BEEN SET")
+      console.log("NEW GAME DETAILS", game.board)
+    }
+    
+    // call the function
+    initializeGame();
+
+    // polling
+    setTimeout(() => {
+      setPoller(poller + 1);
+    }, 1000);
+  }, [poller]);
+
+  // we'll add in a check for WIN CONDITION here later
+
+  const xIsNext = game.xIsNext
 
   return (
     <>
       <NextPlayerMessage xIsNext={xIsNext} />
       <br />
 
-      <ShowBoard  board={board} setBoard= {setBoard} xIsNext={xIsNext} setXIsNext={setXIsNext}/>
+      <ShowBoard game={game} makeAMove = {makeAMove} />
 
-      <RefreshButton setBoard = {setBoard} setXIsNext = {setXIsNext} />
+      {/* <RefreshButton setBoard = {setBoard} setXIsNext = {setXIsNext} /> */}
 
-      <ShowResults outcome={currentWinState.outcome} winner={currentWinState.winner} />
+      {/* <ShowResults outcome={currentWinState.outcome} winner={currentWinState.winner} /> */}
     </>
   )
 }
