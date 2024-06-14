@@ -78,33 +78,46 @@ app.post("/game/:id/move", (req, res) => {
     const { rowNum } = req.body; // same way as saying "const rowNum = req.body.rowNum"
     const { colNum } = req.body
 
-    console.log("POST request for", rowNum, colNum)
-    // coords has the format { rowNum: number, colNum: number }
-
-    console.log("ID is:", id)
-
-    console.log("GAME contains:", game)
-
     // If no game is found    
     if (!game) {
         return res.status(404).send("Game not found (during /post call)");
     }
 
     // Implement impact of user making their move onto the game state and send it back
-    // NOT CURRENTLY CHECKED = WIN CONDITIONS
 
-    
     game.board = getUpdatedBoard(game.board, rowNum, colNum, game.xIsNext )
-
     game.winState = checkWinCondition(game.board)
-    
     game.xIsNext = !game.xIsNext
-
-    console.log("new value for game.board is", game.board)
 
     res.json({game})
 }
 )
+
+
+
+
+app.post("/game/:id/reset", (req, res) => {
+    const id = req.params.id
+    const game = gamesDict[id]
+
+    // If no game is found    
+    if (!game) {
+        return res.status(404).send("Game not found (reset request)");
+    }
+
+    game.board = emptyBoard
+    game.winState = {outcome: null, winner: null}
+    game.xIsNext = true
+
+    res.json({game})
+}
+)
+
+
+
+
+
+
 
 
 const PORT = process.env.PORT || 4000
